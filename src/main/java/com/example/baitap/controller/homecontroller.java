@@ -1,9 +1,9 @@
 package com.example.baitap.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@RestController
+@Controller
 @RequestMapping("/")
 public class homecontroller {
     @GetMapping("/1")
@@ -11,4 +11,9 @@ public class homecontroller {
         return "Hello";
     }
     
+    @GetMapping("/home")
+    public String Index(){
+        return "redirect:/index.html";
+    }
 }
+    

@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import java.util.Arrays;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/api")
 public class bookcontroller {
     @Autowired
     private bookService bookService;
@@ -41,4 +42,14 @@ public class bookcontroller {
         bookService.deleteBook(id);
         return "Book deleted";
     }
-}
+    @GetMapping("/books")
+    public List<book> getBooks(){
+        return Arrays.asList(
+            new book(1, "Book 1", "Author 1"),
+            new book(2, "Book 2", "Author 2"),
+            new book(3, "Book 3", "Author 3")
+        );
+    }
+    }
+    
+

@@ -17,6 +17,12 @@ public class bookService {
         return books.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
     }
     public void addBook(book b) {
+        int newId = books.stream()
+                .mapToInt(book::getId)
+                .max()
+                .orElse(0) + 1;
+
+        b.setId(newId);
         books.add(b);
     }
     public void updateBook(int id, book updateBook)
