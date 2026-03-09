@@ -13,7 +13,7 @@ public class homecontroller {
     
     @GetMapping("/home")
     public String Index(){
-        return "redirect:/index.html";
+        return "home";
     }
 }
     
