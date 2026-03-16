@@ -38,6 +38,18 @@
             </table>
         </div>
     </div>
+    <nav>
+    <div sec:authorize="isAuthenticated()">
+        <span>Chào, <span sec:authentication="name">User</span>!</span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit">Thoát</button>
+        </form>
+    </div>
+
+    <div sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Đăng nhập</a>
+    </div>
+</nav>
 </div>
 </body>
 </html>

@@ -2,7 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" 
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{_layout}">
-<head><title>Thêm sách</title></head>
+<head>
+    <title>Thêm sách</title>
+    <meta name="_csrf" th:content="${_csrf?.token}"/>
+<meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
+</head>
 <body>
 <div layout:fragment="content" class="container">
     <div class="row justify-content-center">
@@ -12,18 +16,18 @@
                     <h4 class="mb-0">➕ Thêm sách mới</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form th:action="@{/add-book}" th:object="${book}" method="post">
+                    <form id="addBookForm">
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Tiêu đề</label>
-                            <input type="text" th:field="*{title}" class="form-control" required>
+                            <input type="text" id="title" class="form-control" placeholder="Nhập tên sách..." required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Tác giả</label>
-                            <input type="text" th:field="*{author}" class="form-control" required>
+                            <input type="text" id="author" class="form-control" placeholder="Tên tác giả..." required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Danh mục</label>
-                            <select th:field="*{category}" class="form-select" required>
+                            <select id="categoryId" class="form-select">
                                 <option value="">-- Chọn danh mục --</option>
                                 <option th:each="cat : ${categories}" 
                                         th:value="${cat.id}" 
@@ -31,7 +35,7 @@
                             </select>
                         </div>
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="submit" class="btn btn-success px-4">💾 Lưu sách</button>
+                            <button type="button" onclick="submitBook()" class="btn btn-success px-4">💾 Lưu qua API</button>
                             <a th:href="@{/books}" class="btn btn-outline-secondary px-4">⬅️ Quay lại</a>
                         </div>
                     </form>
@@ -40,5 +44,53 @@
         </div>
     </div>
 </div>
+
+<script th:inline="javascript">
+    async function submitBook() {
+        // 1. Lấy Token CSRF từ thẻ meta
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // 2. Lấy dữ liệu từ Form
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const categoryId = document.getElementById('categoryId').value;
+
+        if(!title || !author) {
+            alert("Vui lòng nhập đầy đủ tiêu đề và tác giả!");
+            return;
+        }
+
+        // 3. Đóng gói dữ liệu (khớp với class 'book' trong Java)
+        const bookPayload = {
+            title: title,
+            author: author
+            // Nếu model book có chứa Object category, dùng: category: { id: categoryId }
+        };
+
+        try {
+            // 4. Gọi Fetch API
+            const response = await fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [header]: token // Gửi CSRF Token kèm theo
+                },
+                body: JSON.stringify(bookPayload)
+            });
+            console.log('Response status:', response);
+            if (response.ok) {
+                alert('Thành công: Book added!');
+                window.location.href = '/books'; // Chuyển hướng sau khi thành công
+            } else {
+                const errorMsg = await response.text();
+                alert('Lỗi từ Server: ' + errorMsg);
+            }
+        } catch (error) {
+            console.error('Lỗi kết nối:', error);
+            alert('Không thể kết nối tới Server!');
+        }
+    }
+</script>
 </body>
 </html>

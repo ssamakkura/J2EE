@@ -2,50 +2,49 @@ package com.example.baitap.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.baitap.service.bookService;
+import com.example.baitap.service.BookService;
 import com.example.baitap.model.book;
-import com.example.baitap.repository.CategoryRepository;
 
 import java.util.List;
 import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api")
+
 public class bookcontroller {
 
     @Autowired
-    private bookService bookService;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private BookService bookService;
 
     @GetMapping
     public List<book> getAllBooks() {
         return bookService.getAllBooks();
     }
-
-    @GetMapping("/{id}")
-    public book getBookById(@PathVariable int id) {
-        return bookService.getBookById(id);
-    }
-
-    @PostMapping("/add")
+    @PostMapping("/")
     public String addBook(@RequestBody book b) {
         bookService.addBook(b);
+        System.out.println("ok: " +b);
         return "Book added";
     }
 
-    @PutMapping("/{id}")
-    public String updateBook(@PathVariable int id, @RequestBody book updateBook) {
-        bookService.updateBook(id, updateBook);
-        return "Book updated";
-    }
+    // @GetMapping("/{id}")
+    // public book getBookById(@PathVariable int id) {
+    //     return bookService.getBookById(id);
+    // }
 
-    @DeleteMapping("/{id}")
-    public String deleteBook(@PathVariable int id) {
-        bookService.deleteBook(id);
-        return "Book deleted";
-    }
+    
+
+    // @PutMapping("/{id}")
+    // public String updateBook(@PathVariable int id, @RequestBody book updateBook) {
+    //     bookService.updateBook(id, updateBook);
+    //     return "Book updated";
+    // }
+
+    // @DeleteMapping("/{id}")
+    // public String deleteBook(@PathVariable int id) {
+    //     bookService.deleteBook(id);
+    //     return "Book deleted";
+    // }
 
     @GetMapping("/books")
     public List<book> getBooks() {

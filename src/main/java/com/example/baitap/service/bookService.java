@@ -4,38 +4,36 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.example.baitap.model.book;
+import com.example.baitap.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
-public class bookService {
-    private List<book> books = new ArrayList<>();
+public class BookService {
+    @Autowired
+    private BookRepository bookRepository;
+
     public List<book> getAllBooks() {
-        return books;
+        return bookRepository.findAll();
     }
     public book getBookById(int id) {
-        return books.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
+        return bookRepository.findById(id).orElse(null);
     }
     public void addBook(book b) {
-        int newId = books.stream()
-                .mapToInt(book::getId)
-                .max()
-                .orElse(0) + 1;
-
-        b.setId(newId);
-        books.add(b);
+        bookRepository.save(b);
     }
     public void updateBook(int id, book updateBook)
     {
-        books.stream()
-            .filter(book -> book.getId() == id)
-            .findFirst()
-            .ifPresent(book -> {
-                book.setTitle(updateBook.getTitle());
-                book.setAuthor(updateBook.getAuthor());
-            });
+        book existingBook = bookRepository.findById(id).orElse(null);
+        if (existingBook != null) {
+            existingBook.setTitle(updateBook.getTitle());
+            existingBook.setAuthor(updateBook.getAuthor());
+            existingBook.setCategory(updateBook.getCategory());
+            bookRepository.save(existingBook);
+        }
     }
     public void deleteBook(int id) {
-        books.removeIf(b -> b.getId() == id);
+        bookRepository.deleteById(id);
     }
 }

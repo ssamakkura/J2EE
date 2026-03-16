@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{_layout}">
+<head><title>Trang chủ</title></head>
+<body>
+<div layout:fragment="content" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">🏠 Trang chủ</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <h1>Chào mừng bạn đến với hệ thống!</h1>
+                    <p class="fs-5">Xin chào, <strong th:text="${username}"></strong>!</p>
+                    <p>Quyền hạn của bạn là: <span sec:authentication="principal.authorities"></span></p>
+                    <hr>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">🚪 Đăng xuất</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
