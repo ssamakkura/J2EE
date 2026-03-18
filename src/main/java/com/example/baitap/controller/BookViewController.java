@@ -1,8 +1,8 @@
 package com.example.baitap.controller;
 
-import com.example.baitap.model.book;
+import com.example.baitap.model.Book;
 import com.example.baitap.service.BookService;
-import com.example.baitap.service.categoryservice;
+import com.example.baitap.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ public class BookViewController {
     private BookService bookService;
 
     @Autowired
-    private categoryservice categoryService;
+    private CategoryService categoryService;
 
     @GetMapping("/home")
     public String home(Model model, Principal principal) {
@@ -29,34 +29,34 @@ public class BookViewController {
 
     @GetMapping("/books")
     public String listBooks(Model model) {
-        List<book> list = bookService.getAllBooks();
+        List<Book> list = bookService.getAllBooks();
         model.addAttribute("books", list);
         return "book"; 
     }
 
     @GetMapping("/add-book")
     public String showAddForm(Model model) {
-        model.addAttribute("book", new book());
+        model.addAttribute("book", new Book());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "add_book"; 
     }
 
     @PostMapping("/add-book")
-    public String saveBook(@ModelAttribute("book") book b) {
+    public String saveBook(@ModelAttribute("book") Book b) {
         bookService.addBook(b);
         return "redirect:/books";
     }
 
     @GetMapping("/edit-book/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
-        book b = bookService.getBookById(id);
+        Book b = bookService.getBookById(id);
         model.addAttribute("book", b);
         model.addAttribute("categories", categoryService.getAllCategories());
         return "edit_book";
     }
 
     @PostMapping("/edit-book")
-    public String updateBook(@ModelAttribute("book") book b) {
+    public String updateBook(@ModelAttribute("book") Book b) {
     bookService.updateBook(b.getId(), b);
     return "redirect:/books";
 }

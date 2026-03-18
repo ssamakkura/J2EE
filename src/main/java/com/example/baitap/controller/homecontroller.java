@@ -3,12 +3,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/")
-public class homecontroller {
+public class HomeController {
     @GetMapping("/1")
+    @ResponseBody
     public String getMethodName() {
         return "Hello, chao ban";
     }
@@ -18,6 +19,7 @@ public class homecontroller {
         return "home";
     }
     @GetMapping("/error")
+    @ResponseBody
     public String getMethodName(@RequestParam String param) {
         return new String("Lỗi: " + param);
     }

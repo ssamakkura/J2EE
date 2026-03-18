@@ -3,7 +3,7 @@ package com.example.baitap.controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.baitap.service.BookService;
-import com.example.baitap.model.book;
+import com.example.baitap.model.Book;
 
 import java.util.List;
 import java.util.Arrays;
@@ -11,17 +11,17 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/api")
 
-public class bookcontroller {
+public class BookController {
 
     @Autowired
     private BookService bookService;
 
     @GetMapping
-    public List<book> getAllBooks() {
+    public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
     @PostMapping("/")
-    public String addBook(@RequestBody book b) {
+    public String addBook(@RequestBody Book b) {
         bookService.addBook(b);
         System.out.println("ok: " +b);
         return "Book added";
@@ -47,16 +47,16 @@ public class bookcontroller {
     // }
 
     @GetMapping("/books")
-    public List<book> getBooks() {
-        book b1 = new book();
+    public List<Book> getBooks() {
+        Book b1 = new Book();
         b1.setTitle("Book 1");
         b1.setAuthor("Author 1");
         
-        book b2 = new book();
+        Book b2 = new Book();
         b2.setTitle("Book 2");
         b2.setAuthor("Author 2");
         
-        book b3 = new book();
+        Book b3 = new Book();
         b3.setTitle("Book 3");
         b3.setAuthor("Author 3");
         

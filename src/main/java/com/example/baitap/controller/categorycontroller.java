@@ -1,7 +1,7 @@
 package com.example.baitap.controller;
 
 import com.example.baitap.model.Category;
-import com.example.baitap.service.categoryservice;
+import com.example.baitap.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,10 +9,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
-public class categorycontroller {
+public class CategoryController {
 
     @Autowired
-    private categoryservice categoryService;
+    private CategoryService categoryService;
 
     @GetMapping
     public List<Category> getAllCategories() {

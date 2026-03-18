@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.example.baitap.model.Account;
 import java.util.Optional;
 
-public interface AccountRepository extends JpaRepository<Account, Integer> {
+public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query("SELECT a FROM Account a WHERE a.username = :username")
     Optional<Account> findByUsername(@Param("username") String username);
 }

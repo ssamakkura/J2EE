@@ -3,7 +3,7 @@ package com.example.baitap.service;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.example.baitap.model.book;
+import com.example.baitap.model.Book;
 import com.example.baitap.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
@@ -14,18 +14,18 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<book> getAllBooks() {
+    public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
-    public book getBookById(int id) {
+    public Book getBookById(int id) {
         return bookRepository.findById(id).orElse(null);
     }
-    public void addBook(book b) {
+    public void addBook(Book b) {
         bookRepository.save(b);
     }
-    public void updateBook(int id, book updateBook)
+    public void updateBook(int id, Book updateBook)
     {
-        book existingBook = bookRepository.findById(id).orElse(null);
+        Book existingBook = bookRepository.findById(id).orElse(null);
         if (existingBook != null) {
             existingBook.setTitle(updateBook.getTitle());
             existingBook.setAuthor(updateBook.getAuthor());

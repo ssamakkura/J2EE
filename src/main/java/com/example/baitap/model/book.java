@@ -2,6 +2,7 @@ package com.example.baitap.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "books")
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class book {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,5 +21,6 @@ public class book {
     private String author;
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 }
