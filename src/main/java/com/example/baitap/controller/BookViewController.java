@@ -4,10 +4,13 @@ import com.example.baitap.model.Book;
 import com.example.baitap.service.BookService;
 import com.example.baitap.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.security.Principal;
 
 @Controller
@@ -28,9 +31,36 @@ public class BookViewController {
     }
 
     @GetMapping("/books")
-    public String listBooks(Model model) {
-        List<Book> list = bookService.getAllBooks();
-        model.addAttribute("books", list);
+    public String listBooks(Model model, 
+                            @RequestParam(name = "keyword", required = false) String keyword,
+                            @RequestParam(name = "categoryId", required = false) Integer categoryId,
+                            @RequestParam(name = "sort", defaultValue = "") String sort,
+                            @RequestParam(name = "page", defaultValue = "0") int page) {
+        Sort sortOrder = Sort.unsorted();
+        if ("price_asc".equals(sort)) {
+            sortOrder = Sort.by("price").ascending();
+        } else if ("price_desc".equals(sort)) {
+            sortOrder = Sort.by("price").descending();
+        }
+
+        Pageable pageable = PageRequest.of(page, 5, sortOrder);
+        Page<Book> bookPage;
+        
+        if (keyword != null && !keyword.isEmpty()) {
+            bookPage = bookService.searchBooks(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        } else if (categoryId != null && categoryId > 0) {
+            bookPage = bookService.getBooksByCategory(categoryId, pageable);
+            model.addAttribute("categoryId", categoryId);
+        } else {
+            bookPage = bookService.getAllBooks(pageable);
+        }
+        
+        model.addAttribute("books", bookPage.getContent());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("sort", sort);
         return "book"; 
     }
 

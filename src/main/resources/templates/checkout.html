@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{_layout}">
+<head><title>Thanh toán</title></head>
+<body>
+    <div layout:fragment="content" class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-header bg-success text-white text-center">
+                        <h4 class="mb-0">🚀 Thông tin đặt hàng</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-info py-2 text-center">
+                            Tổng giá trị: <strong th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></strong>
+                        </div>
+                        <form th:action="@{/cart/checkout}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Họ và tên khách hàng</label>
+                                <input type="text" name="name" class="form-control" placeholder="Nguyễn Văn A" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Địa chỉ giao hàng</label>
+                                <input type="text" name="address" class="form-control" placeholder="123 Đường ABC, Quận XYZ..." required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Số điện thoại</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="090XXXXXXX" required>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold">Xác nhận đặt hàng ✅</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a th:href="@{/cart}" class="text-secondary text-decoration-none">⬅️ Quay lại giỏ hàng</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

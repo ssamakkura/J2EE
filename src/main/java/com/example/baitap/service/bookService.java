@@ -1,8 +1,7 @@
 package com.example.baitap.service;
 
-import java.util.List;
-import java.util.ArrayList;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.example.baitap.model.Book;
 import com.example.baitap.repository.BookRepository;
 
@@ -14,8 +13,8 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
     public Book getBookById(int id) {
         return bookRepository.findById(id).orElse(null);
@@ -29,6 +28,7 @@ public class BookService {
         if (existingBook != null) {
             existingBook.setTitle(updateBook.getTitle());
             existingBook.setAuthor(updateBook.getAuthor());
+            existingBook.setPrice(updateBook.getPrice());
             existingBook.setCategory(updateBook.getCategory());
             bookRepository.save(existingBook);
         }
@@ -36,4 +36,13 @@ public class BookService {
     public void deleteBook(int id) {
         bookRepository.deleteById(id);
     }
+    public Page<Book> searchBooks(String keyword, Pageable pageable) {
+        return bookRepository.findByTitleContaining(keyword, pageable);
+    }
+    public Page<Book> getBooksByCategory(int categoryId, Pageable pageable) {
+        return bookRepository.findByCategoryId(categoryId, pageable);
+    }
 }
+
+
+

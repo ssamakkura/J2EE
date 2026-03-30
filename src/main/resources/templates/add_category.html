@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <title>Thêm danh mục</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/categories}">Danh mục</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Thêm mới</li>
+                    </ol>
+                </nav>
+
+                <div class="card shadow border-0 overflow-hidden">
+                    <div class="card-header bg-gradient bg-primary text-white py-4 d-flex align-items-center">
+                        <i class="bi bi-folder-plus fs-2 me-3"></i>
+                        <h2 class="card-title fw-bold mb-0">Thêm danh mục mới</h2>
+                    </div>
+                    <div class="card-body p-4 bg-white">
+                        <form th:action="@{/add-category}" th:object="${category}" method="post">
+                            <div class="mb-5">
+                                <label for="name" class="form-label fw-bold text-muted small text-uppercase">Tên danh mục</label>
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-light border-end-0 text-primary">
+                                        <i class="bi bi-tag-fill"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0 ps-0" id="name" th:field="*{name}" 
+                                           placeholder="Nhập tên danh mục (ví dụ: Công nghệ, Văn học...)" required>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-end">
+                                <a th:href="@{/categories}" class="btn btn-outline-secondary px-4 shadow-sm">
+                                    Hủy bỏ
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4 shadow">
+                                    <i class="bi bi-check-lg me-2"></i> Lưu danh mục
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,55 +1,131 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{_layout}">
-<head><title>Danh sách sách</title></head>
-<body>
-<div layout:fragment="content" class="container">
-    <div class="card shadow-sm rounded-4">
-        <div class="card-header bg-primary text-white text-center">
-            <h4 class="mb-0">📚 Danh sách sách hiện có</h4>
-        </div>
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-end mb-3">
-                <a th:href="@{/add-book}" class="btn btn-success">➕ Thêm sách mới</a>
-            </div>
-            <table class="table table-hover align-middle text-center">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Tiêu đề</th>
-                        <th>Tác giả</th>
-                        <th>Danh mục</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="b : ${books}">
-                        <td th:text="${b.id}"></td>
-                        <td th:text="${b.title}"></td>
-                        <td th:text="${b.author}"></td>
-                        <td th:text="${b.category != null ? b.category.name : 'Chưa phân loại'}" class="badge bg-info text-dark mt-2"></td>
-                        <td>
-                            <a th:href="@{/edit-book/{id}(id=${b.id})}" class="btn btn-warning btn-sm">✏️ Sửa</a>
-                            <a th:href="@{/delete-confirm/{id}(id=${b.id})}" class="btn btn-danger btn-sm">🗑️ Xóa</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <nav>
-    <div sec:authorize="isAuthenticated()">
-        <span>Chào, <span sec:authentication="name">User</span>!</span>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit">Thoát</button>
-        </form>
-    </div>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{_layout}">
 
-    <div sec:authorize="isAnonymous()">
-        <a th:href="@{/login}">Đăng nhập</a>
+<head>
+    <title>Danh sách sách</title>
+</head>
+
+<body>
+    <div layout:fragment="content" class="container">
+        <div class="card shadow-sm rounded-4">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">📚 Danh sách sách hiện có</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="row align-items-center mb-4">
+                    <div class="col">
+                        <form th:action="@{/books}" method="get" class="d-flex gap-2 rounded shadow-sm">
+                            <input type="text" name="keyword" class="form-control" th:value="${keyword}" 
+                                   placeholder="🔍 Tìm theo tên sách..." aria-label="Search" style="max-width: 250px;">
+                            
+                            <select name="categoryId" class="form-select" style="max-width: 200px;" onchange="this.form.submit()">
+                                <option value="0">-- Tất cả danh mục --</option>
+                                <option th:each="cat : ${categories}" 
+                                        th:value="${cat.id}" 
+                                        th:text="${cat.name}"
+                                        th:selected="${cat.id == categoryId}"></option>
+                            </select>
+                            
+                            <input type="hidden" name="sort" th:value="${sort}">
+                            <button class="btn btn-primary px-4" type="submit">Tìm</button>
+                        </form>
+                    </div>
+                    <div class="col-auto d-flex gap-2">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                🔃 Sắp xếp theo giá
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" th:href="@{/books(sort='price_asc', keyword=${keyword}, categoryId=${categoryId})}">Giá tăng dần</a></li>
+                                <li><a class="dropdown-item" th:href="@{/books(sort='price_desc', keyword=${keyword}, categoryId=${categoryId})}">Giá giảm dần</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" th:href="@{/books(keyword=${keyword}, categoryId=${categoryId})}">Mặc định</a></li>
+                            </ul>
+                        </div>
+                        <a th:href="@{/add-book}" class="btn btn-success"> Thêm mới </a>
+                    </div>
+                </div>
+
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tiêu đề</th>
+                            <th>Tác giả</th>
+                            <th>Giá (VNĐ)</th>
+                            <th>Danh mục</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${books}">
+                            <td th:text="${b.id}"></td>
+                            <td th:text="${b.title}"></td>
+                            <td th:text="${b.author}"></td>
+                            <td class="fw-bold text-primary" th:text="${#numbers.formatDecimal(b.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+                            <td th:text="${b.category != null ? b.category.name : 'Chưa phân loại'}"
+                                class="badge bg-info text-dark mt-2"></td>
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    <form th:action="@{/cart/add}" method="post" style="display:inline;">
+                                        <input type="hidden" name="bookId" th:value="${b.id}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm" title="Thêm vào giỏ">🛒</button>
+                                    </form>
+                                    <a th:href="@{/edit-book/{id}(id=${b.id})}" class="btn btn-warning btn-sm" title="Sửa">✏️</a>
+                                    <a th:href="@{/delete-confirm/{id}(id=${b.id})}" class="btn btn-danger btn-sm" title="Xóa">🗑️</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(books)}">
+                            <td colspan="6" class="py-4 text-muted">Không tìm thấy sách nào.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card-footer bg-white border-top-0 pb-4" th:if="${totalPages > 0}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        <!-- Nút Previous -->
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books(page=${currentPage - 1}, keyword=${keyword}, sort=${sort}, categoryId=${categoryId})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Trang trước</span>
+                            </a>
+                        </li>
+                        
+                        <!-- Page Numbers -->
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                            th:classappend="${currentPage == i} ? 'active'">
+                            <a class="page-link" th:href="@{/books(page=${i}, keyword=${keyword}, sort=${sort}, categoryId=${categoryId})}" th:text="${i + 1}">1</a>
+                        </li>
+                        
+                        <!-- Nút Next -->
+                        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books(page=${currentPage + 1}, keyword=${keyword}, sort=${sort}, categoryId=${categoryId})}" aria-label="Next">
+                                <span aria-hidden="true">Trang sau &raquo;</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <nav>
+            <div sec:authorize="isAuthenticated()">
+                <span>Chào, <span sec:authentication="name">User</span>!</span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit">Thoát</button>
+                </form>
+            </div>
+
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">Đăng nhập</a>
+            </div>
+        </nav>
     </div>
-</nav>
-</div>
 </body>
+
 </html>

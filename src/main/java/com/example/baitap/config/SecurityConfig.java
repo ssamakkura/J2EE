@@ -22,12 +22,13 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/cart/**", "/books/**", "/add-book/**", "/edit-book/**", "/delete-confirm/**", "/delete-book/**", 
+                                "/categories/**", "/add-category/**", "/edit-category/**", "/delete-category/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/categories/**").hasRole("ADMIN")
                 
                 .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/**").hasRole("ADMIN")
-                
                 
                 .anyRequest().authenticated()
             )

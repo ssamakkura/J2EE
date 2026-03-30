@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{_layout}">
+<head><title>Đặt hàng thành công</title></head>
+<body>
+    <div layout:fragment="content" class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
+                <div class="card shadow-md rounded-4 border-0">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-4">
+                            <span class="display-1 text-success">✅</span>
+                        </div>
+                        <h2 class="fw-bold text-dark">Đặt hàng thành công!</h2>
+                        <p class="text-muted fs-5">Cảm ơn bạn, <strong th:text="${order.customerName}">...</strong>! Mã đơn hàng của bạn là <strong>#<span th:text="${order.id}">...</span></strong>.</p>
+                        
+                        <div class="border rounded p-4 my-4 bg-light text-start shadow-sm mx-auto" style="max-width: 450px;">
+                            <h5 class="fw-bold mb-3">Thông tin đơn hàng:</h5>
+                            <p class="mb-2"><strong>Địa chỉ:</strong> <span th:text="${order.address}">...</span></p>
+                            <p class="mb-2"><strong>Số điện thoại:</strong> <span th:text="${order.phone}">...</span></p>
+                            <p class="mb-3"><strong>Ngày đặt:</strong> <span th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">...</span></p>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold fs-5">Tổng tiền:</span>
+                                <span class="fw-bold fs-4 text-danger" th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' ₫'">...</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4 px-5">
+                            <a th:href="@{/books}" class="btn btn-primary btn-lg fw-bold rounded-pill">Tiếp tục mua hàng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
